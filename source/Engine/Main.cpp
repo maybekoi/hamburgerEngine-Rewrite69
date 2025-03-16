@@ -70,6 +70,7 @@ void HamburgerEngine::Run()
             curTicks = SDL_GetPerformanceCounter();
         }
 
+        ProcessInput();
         Update();
         Render();
     }
@@ -82,6 +83,23 @@ void HamburgerEngine::Update()
 void HamburgerEngine::Render()
 {
     ClearScreen(0);
+    
+    frameCount++;
+    uint64_t currentTime = SDL_GetPerformanceCounter();
+    
+    if (currentTime > lastFPSUpdate + SDL_GetPerformanceFrequency()) {
+        currentFPS = frameCount * (float)SDL_GetPerformanceFrequency() / 
+                    (currentTime - lastFPSUpdate);
+        lastFPSUpdate = currentTime;
+        frameCount = 0;
+    }
+    
+    if (showFPS) {
+        char fpsText[32];
+        sprintf(fpsText, "FPS: %.1f", currentFPS);
+        printf("%s\r", fpsText);
+    }
+    
     FlipScreen();
 }
 
@@ -124,7 +142,6 @@ bool HamburgerEngine::LoadGameConfig(const char* filepath)
         return false;
     }
     gameTitle[len] = '\0';
-
     printf("Loaded title: %s\n", gameTitle);
 
     ReadFileData(&info, &len, 1);
@@ -137,10 +154,37 @@ bool HamburgerEngine::LoadGameConfig(const char* filepath)
     ReadFileData(&info, &startFullScreen, sizeof(bool));
     ReadFileData(&info, &borderless, sizeof(bool));
     ReadFileData(&info, &vsync, sizeof(bool));
+    
+    // Read new settings
+    ReadFileData(&info, &targetFPS, sizeof(int));
+    ReadFileData(&info, &screenWidth, sizeof(int));
+    ReadFileData(&info, &screenHeight, sizeof(int));
+    ReadFileData(&info, &showFPS, sizeof(bool));
 
     printf("Config loaded successfully\n");
+    printf("Screen size: %dx%d\n", screenWidth, screenHeight);
+    printf("Target FPS: %d\n", targetFPS);
+    printf("Show FPS: %s\n", showFPS ? "true" : "false");
+    
     CloseFile(&info);
     return true;
+}
+
+void HamburgerEngine::ProcessInput()
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                gameRunning = false;
+                break;
+                
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_ESCAPE)
+                    gameRunning = false;
+                break;
+        }
+    }
 }
 
 int SDL_main(int argc, char* argv[])

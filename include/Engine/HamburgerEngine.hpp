@@ -30,6 +30,15 @@ public:
     
     SDL_Texture* screenTexture = nullptr;
     
+    int targetFPS = 60;
+    int screenWidth = 320;
+    int screenHeight = 240;
+    bool showFPS = false;
+    
+    float currentFPS = 0.0f;
+    uint64_t lastFPSUpdate = 0;
+    int frameCount = 0;
+    
     void Init();
     void Run();
     bool LoadGameConfig(const char *filepath);

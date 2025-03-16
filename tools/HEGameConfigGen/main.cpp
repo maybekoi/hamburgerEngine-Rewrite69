@@ -15,20 +15,32 @@ int main() {
         return 1;
     }
 
-    WriteString(out, "Template Game");
-    WriteString(out, "A simple template game for the Hamburger Engine");
+    WriteString(out, "Template Game"); // Title
+    WriteString(out, "A simple template game for the Hamburger Engine"); // Desc
 
+    // Window settings
     int windowScale = 2;
     int refreshRate = 60;
     bool startFullScreen = false;
     bool borderless = false;
     bool vsync = true;
+    int screenWidth = 320;
+    int screenHeight = 240;
+    
+    // Game settings
+    int targetFPS = 60;
+    bool showFPS = true;
 
     out.write(reinterpret_cast<char*>(&windowScale), sizeof(int));
     out.write(reinterpret_cast<char*>(&refreshRate), sizeof(int));
     out.write(reinterpret_cast<char*>(&startFullScreen), sizeof(bool));
     out.write(reinterpret_cast<char*>(&borderless), sizeof(bool));
     out.write(reinterpret_cast<char*>(&vsync), sizeof(bool));
+    
+    out.write(reinterpret_cast<char*>(&targetFPS), sizeof(int));
+    out.write(reinterpret_cast<char*>(&screenWidth), sizeof(int));
+    out.write(reinterpret_cast<char*>(&screenHeight), sizeof(int));
+    out.write(reinterpret_cast<char*>(&showFPS), sizeof(bool));
 
     std::cout << "Successfully created GameConfig.bin\n";
     return 0;
