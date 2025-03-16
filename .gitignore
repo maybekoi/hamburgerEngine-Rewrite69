@@ -21,7 +21,6 @@ RSDKv2/
 *.o
 *.obj
 *.exe
-*.dll
 *.so
 *.dylib
 
