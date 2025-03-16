@@ -1,0 +1,32 @@
+# Build directories
+build/
+bin/
+lib/
+x64/
+Debug/
+Release/
+
+# stuff I use as a reference lol
+RSDKv2/ 
+
+# IDE files
+.vscode/
+.vs/
+*.suo
+*.user
+*.sln
+*.vcxproj
+*.vcxproj.filters
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+*.cmake 
