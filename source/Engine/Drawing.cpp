@@ -3,9 +3,9 @@
 #include <cstring>
 #include <cstdio>
 
-int SCREEN_XSIZE = 1280;
+int SCREEN_XSIZE = 320;
 int SCREEN_CENTERX = SCREEN_XSIZE / 2;
-int SCREEN_YSIZE = 720;
+int SCREEN_YSIZE = 240;
 int SCREEN_CENTERY = SCREEN_YSIZE / 2;
 
 uint8_t BlendLookupTable[0x100 * 0x100];

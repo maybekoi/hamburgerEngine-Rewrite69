@@ -33,6 +33,7 @@ public:
     void Init();
     void Run();
     bool LoadGameConfig(const char *filepath);
+    bool InitDataFile();
     void Release();
 
 private:

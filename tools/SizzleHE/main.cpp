@@ -13,7 +13,7 @@ void WriteString(std::ofstream& out, const std::string& str) {
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
-        std::cout << "Usage: BinCompiler <input_folder> <output_file>\n";
+        std::cout << "Usage: SizzleHE <input_folder> <output_file>\n";
         return 1;
     }
 

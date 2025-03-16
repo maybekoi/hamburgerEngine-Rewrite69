@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <string>
+#include <map>
 
 struct FileInfo {
     FILE* file;
@@ -19,5 +20,9 @@ size_t GetFilePosition(FileInfo* info);
 
 bool CheckBinFile(const char* filePath);
 bool LoadBinFile(const char* filePath);
+
+extern std::map<std::string, size_t> binFilePositions;
+extern std::map<std::string, uint32_t> binFileSizes;
+extern FileInfo binFileInfo;
 
 #endif // HAMBURGER_READER_H

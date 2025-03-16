@@ -15,6 +15,7 @@ void HamburgerEngine::Init()
     strcpy(gameTitle, "Hamburger Engine Game");
     strcpy(gameDescription, "A game made with Hamburger Engine");
 
+    InitDataFile();
     if (!LoadGameConfig("GameConfig.bin")) {
         printf("Failed to load GameConfig.bin, using defaults\n");
     }
@@ -31,8 +32,8 @@ void HamburgerEngine::Init()
         gameTitle,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        320 * windowScale,
-        240 * windowScale,
+        SCREEN_XSIZE * windowScale,
+        SCREEN_YSIZE * windowScale,
         SDL_WINDOW_SHOWN | (startFullScreen ? SDL_WINDOW_FULLSCREEN : 0)
     );
 
@@ -47,7 +48,9 @@ void HamburgerEngine::Init()
         return;
     }
 
-    frameBuffer = new uint8_t[320 * 240];
+    frameBuffer = new uint8_t[SCREEN_XSIZE * SCREEN_YSIZE];
+    InitDrawingSystem();
+    
     initialized = true;
 }
 
@@ -57,28 +60,29 @@ void HamburgerEngine::Run()
         return;
 
     gameRunning = true;
+    uint64_t targetFreq = SDL_GetPerformanceFrequency() / refreshRate;
+    uint64_t curTicks = 0;
+
     while (gameRunning) {
-        ProcessInput();
+        if (!vsync) {
+            if (SDL_GetPerformanceCounter() < curTicks + targetFreq)
+                continue;
+            curTicks = SDL_GetPerformanceCounter();
+        }
+
         Update();
         Render();
     }
 }
 
-void HamburgerEngine::ProcessInput()
+void HamburgerEngine::Update()
 {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT)
-            gameRunning = false;
-    }
 }
-
-void HamburgerEngine::Update() {}
 
 void HamburgerEngine::Render()
 {
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    ClearScreen(0);
+    FlipScreen();
 }
 
 void HamburgerEngine::Release()
@@ -99,14 +103,11 @@ void HamburgerEngine::Release()
 
 bool HamburgerEngine::LoadGameConfig(const char* filepath) 
 {
-    if (CheckBinFile("Data.bin")) {
-        printf("Found Data.bin file\n");
-        LoadBinFile("Data.bin");
-    }
-
+    printf("Loading game config...\n");
+    
     FileInfo info = {};
     if (!LoadFile(filepath, &info)) {
-        printf("Failed to open config file: %s\n", filepath);
+        printf("Failed to open config file: %s from Data.bin\n", filepath);
         return false;
     }
 
@@ -129,6 +130,7 @@ bool HamburgerEngine::LoadGameConfig(const char* filepath)
     ReadFileData(&info, &len, 1);
     ReadFileData(&info, gameDescription, len);
     gameDescription[len] = '\0';
+    printf("Loaded description: %s\n", gameDescription);
 
     ReadFileData(&info, &windowScale, sizeof(int));
     ReadFileData(&info, &refreshRate, sizeof(int));
@@ -136,6 +138,7 @@ bool HamburgerEngine::LoadGameConfig(const char* filepath)
     ReadFileData(&info, &borderless, sizeof(bool));
     ReadFileData(&info, &vsync, sizeof(bool));
 
+    printf("Config loaded successfully\n");
     CloseFile(&info);
     return true;
 }
