@@ -1,8 +1,7 @@
 # Build directories
 build/
 bin/
-lib/
-x64/
+VisualC/x64/
 Debug/
 Release/
 
