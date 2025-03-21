@@ -13,8 +13,6 @@ RSDKv2/
 .vs/
 *.suo
 *.user
-*.sln
-*.vcxproj
 *.vcxproj.filters
 
 # Compiled files
